@@ -69,18 +69,16 @@ class db_driver_pdoproxymysql {
 
     function _dbconnect($dbhost, $dbuser, $dbpw, $dbcharset, $dbname, $pconnect, $halt = true) {
 
-        try{
-            
+        try {
+
             $link = new pdoProxy("mysql:host=$dbhost;dbname=$dbname;charset=$dbcharset", $dbuser, $dbpw);
-            
+
             $link->query("SET NAMES " . $this->config[1]['dbcharset']);
-            
         } catch (\Exception $ex) {
 
-             $halt && $this->halt('notconnect', $ex->getCode());
-            
+            $halt && $this->halt('notconnect', $ex->getCode());
         }
-            
+
         return $link;
     }
 
@@ -174,13 +172,19 @@ class db_driver_pdoproxymysql {
         }
 
 
-        if ($unbuffered) {
-            $this->curlink->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
+        if (!$unbuffered) {
+            $this->curlink->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,TRUE);
         }
 
         try {
 
             $query = $this->curlink->query($sql);
+            
+            $cmd = trim(strtoupper(substr($sql, 0, strpos($sql, ' '))));
+            if ($cmd === 'UPDATE' || $cmd === 'DELETE' || $cmd === 'INSERT') {
+                $this->rowCount = $query->rowCount(); //受影响的行数
+                $this->curlink->release();  //需要释放，否则可能会导致 触发器不触发
+            }
         } catch (\Exception $exc) {
 
             !$silent && $this->halt($exc->getMessage(), $exc->getCode(), $sql);
@@ -193,13 +197,6 @@ class db_driver_pdoproxymysql {
 
         $this->querynum++;
 
-        $cmd = trim(strtoupper(substr($sql, 0, strpos($sql, ' '))));
-        if ($cmd === 'SELECT') {
-            
-        } elseif ($cmd === 'UPDATE' || $cmd === 'DELETE' || $cmd === 'INSERT' ) {
-            $this->rowCount = $query->rowCount(); //受影响的行数
-            $this->curlink->release();  //需要释放，否则可能会导致 触发器不触发
-        }
 
         return $query;
     }
@@ -327,8 +324,6 @@ class db_driver_pdoproxymysql {
         throw new DbException($message, $code, $sql);
     }
 
-            
-
     /**
      * 开启DB事务
      */
@@ -338,7 +333,7 @@ class db_driver_pdoproxymysql {
             $this->ts = true;
         }
     }
-            
+
     /**
      * 提交DB事务
      */
@@ -371,11 +366,11 @@ class db_driver_pdoproxymysql {
  * 
  * ref : http://php.net/manual/zh/intro.mysql.php
  */
-if(!function_exists('mysql_escape_string')){
-    
-    function mysql_escape_string($str){
-               
+if (!function_exists('mysql_escape_string')) {
+
+    function mysql_escape_string($str) {
+
         return DB::object()->escape_string($str);
     }
-            
+
 }

@@ -165,8 +165,8 @@ class db_driver_pdomysql {
         }
 
 
-        if ($unbuffered) {
-            $this->curlink->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY);
+        if (!$unbuffered) {
+            $this->curlink->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY,TRUE);
         }
 
         if (!($query = $this->curlink->query($sql))) {
