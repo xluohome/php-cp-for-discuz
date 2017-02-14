@@ -5,8 +5,8 @@
  *      This is NOT a freeware, use is subject to license terms
  * 
  *      php-cp for discuz x3 
- *
- *      $Id: db_driver_pdoproxymysql_slave.php  2016年11月9日  120075889@qq.com $
+ *		https://github.com/xluohome/php-cp-for-discuz
+ *      $Id: db_driver_pdoproxymysql_slave.php  2016年11月9日  phposs@qq.com $
  */
 
 if(!defined('IN_DISCUZ')) {

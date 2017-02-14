@@ -3,8 +3,8 @@
 /**
  *      [Discuz!] (C)2001-2099 Comsenz Inc.
  *      This is NOT a freeware, use is subject to license terms
- *
- *      $Id: db_driver_mysqli.php 33333 2013-05-28 09:10:48Z kamichen $
+ *      https://github.com/xluohome/php-cp-for-discuz
+ *      $Id: db_driver_mysqli.php   2016Äê11ÔÂ9ÈÕ  phposs@qq.com $
  */
 if (!defined('IN_DISCUZ')) {
     exit('Access Denied');
